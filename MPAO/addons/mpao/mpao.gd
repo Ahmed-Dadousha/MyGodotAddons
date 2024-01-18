@@ -7,7 +7,7 @@ const GAME_MANAGER = "res://Scripts/GameManager.gd"
 var file_exists: bool
 var file: FileAccess
 var GameManager_Variables = """extends Node
-#MAPO
+#CODE
 
 signal countChanged()
 signal sceneChanged()
@@ -55,7 +55,7 @@ func _enter_tree():
 		file = FileAccess.open(GAME_MANAGER, FileAccess.READ_WRITE) 
 		var file_data = file.get_as_text()
 		
-		if "#MAPO" in file_data:
+		if "#CODE" in file_data:
 			return
 		## Move the curser to end of the file
 		file.seek_end()
