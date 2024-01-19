@@ -1,5 +1,35 @@
 extends Node
 
+#region NetworkManager 
+
+
+signal countChanged()
+signal sceneChanged()
+
+var changeScene:bool = false:
+	set(value):
+		changeScene = true
+		sceneChanged.emit()
+
+var players: Dictionary = {}
+
+var playersLoaded: int = 0:
+	set(value):
+		playersLoaded = value
+		countChanged.emit()
+	
+var avilableRooms: Array = []
+
+func addIP(value):
+	if value not in avilableRooms:
+		avilableRooms.append(value)
+
+func removeIP(value):
+	avilableRooms.erase(value)
+
+#endregion
+
+
 #region Multiplayer Manager
 
 # Variables
@@ -26,8 +56,8 @@ var connected: bool = false
 func _process(_delta):
 	if connected == true:
 		if multiplayer.multiplayer_peer == null:
-			GameManager.players.clear()
-			GameManager.playersLoaded = 0
+			NetworkManager.players.clear()
+			NetworkManager.playersLoaded = 0
 			connected = false
 
 # Multiplayer Functions
@@ -35,32 +65,32 @@ func _process(_delta):
 # Server Functions
 func playerConnected(id):
 	print("Player " + str(id) + " Connected")
-	GameManager.playersLoaded += 1
+	NetworkManager.playersLoaded += 1
 	checkName()
 	register_player.rpc_id(id, playerData)	
 	player_connected.emit(id, playerData)
 	
 func playerDisconnected(id):
 	# Remove the player data if disconnected
-	GameManager.players.erase(id)
-	GameManager.playersLoaded -= 1
+	NetworkManager.players.erase(id)
+	NetworkManager.playersLoaded -= 1
 	print("Player " + str(id) + " Disconnected")
 	player_disconnected.emit(id)
 	
 # Client Functions
 func serverConnected():
-	GameManager.playersLoaded += 1
+	NetworkManager.playersLoaded += 1
 	print("Server Connected!")
 	checkName()
 	# add player data to players array
-	GameManager.players[multiplayer.get_unique_id()] = playerData
+	NetworkManager.players[multiplayer.get_unique_id()] = playerData
 	connected = true
 
 func serverDisconnected():
 	print("Server Disconnected!")
 	multiplayer.multiplayer_peer = null
-	GameManager.players.clear()
-	GameManager.playersLoaded = 0
+	NetworkManager.players.clear()
+	NetworkManager.playersLoaded = 0
 	server_disconnected.emit()
 	returnToMain()
 	
@@ -72,7 +102,7 @@ func connectionFailed():
 @rpc("any_peer", "call_local", "reliable")
 func register_player(newPlayerData):
 	var newPlayerId = multiplayer.get_remote_sender_id()
-	GameManager.players[newPlayerId] = newPlayerData
+	NetworkManager.players[newPlayerId] = newPlayerData
 	
 @rpc("any_peer", "call_local")
 func startGame():
@@ -103,9 +133,9 @@ func createServer() -> bool:
 	checkName()
 	checkColor()
 	
-	GameManager.playersLoaded += 1
+	NetworkManager.playersLoaded += 1
 	
-	GameManager.players[1] = playerData
+	NetworkManager.players[1] = playerData
 	
 	
 	# Broadcast room Data 
@@ -125,8 +155,8 @@ func createClient() -> bool:
 	#runListener()
 	#await  get_tree().create_timer(2).timeout
 	#
-	#if address not in GameManager.avilableRooms:
-		#print(GameManager.avilableRooms)
+	#if address not in NetworkManager.avilableRooms:
+		#print(NetworkManager.avilableRooms)
 		#print("This IP Not Exist")
 		#disconnectFromTheServer()
 		#return false
@@ -140,10 +170,10 @@ func createClient() -> bool:
 
 # My Custem Functions
 func printPlayersData():
-	print("\nThere Is [" + str(GameManager.playersLoaded) + "] Players\n")
+	print("\nThere Is [" + str(NetworkManager.playersLoaded) + "] Players\n")
 	
-	for player in GameManager.players.keys():
-		print(GameManager.players[player])
+	for player in NetworkManager.players.keys():
+		print(NetworkManager.players[player])
 		
 	print("\n")
 

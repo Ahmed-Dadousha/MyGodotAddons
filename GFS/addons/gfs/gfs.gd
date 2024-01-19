@@ -1,7 +1,7 @@
 @tool
 extends EditorPlugin
 
-const FOLDERS: Array[String] = ["Scenes", "Scripts", "Assets", "Assets/Arts", "Assets/Sounds", 
+const FOLDERS: Array[String] = ["Scenes", "Scripts", "Assets","Shaders", "Resources","Assets/Arts", "Assets/Sounds", 
 								"Assets/Fonts", "Scenes/Levels", "Scenes/Characters", "Scenes/Objects",
 								 "Scenes/UI", "Scenes/Enemies"]
 

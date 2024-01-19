@@ -20,6 +20,8 @@ Will create these folders:
 - Scenes/Characters.
 - Scenes/Enemies
 - Scripts.
+- Resources
+- Shaders
 ## Setup
 
 - Just put the addon in addons folder.

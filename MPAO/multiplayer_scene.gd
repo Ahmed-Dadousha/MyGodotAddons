@@ -3,7 +3,7 @@ extends Control
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	GameManager.connect("countChanged", change_count)
+	NetworkManager.connect("countChanged", change_count)
 	NetworkManager.multiplayerScene = "res://multiplayer_scene.tscn"
 	NetworkManager.gameScene = "res://game.tscn"
 
@@ -29,8 +29,8 @@ func _on_client_pressed():
 func _on_exit_pressed():
 	NetworkManager.disconnectFromTheServer()
 	
-	GameManager.playersLoaded = 0
-	GameManager.players.clear()
+	NetworkManager.playersLoaded = 0
+	NetworkManager.players.clear()
 	
 	$lobby.hide()
 	$main.show()
@@ -40,7 +40,7 @@ func _on_start_pressed():
 	NetworkManager.startGame.rpc()
 
 func change_count():
-	$lobby/playersCount.text = str(GameManager.playersLoaded)
+	$lobby/playersCount.text = str(NetworkManager.playersLoaded)
 
 func _on_data_pressed():
 	NetworkManager.printPlayersData()

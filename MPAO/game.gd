@@ -16,12 +16,12 @@ func create_players():
 	# Markers indexer
 	var i: int = 0
 	
-	for player in GameManager.players:
+	for player in NetworkManager.players:
 		# Instantiate new player scene
 		var current_player = playerScene.instantiate() as CharacterBody2D
 		# Set player properties
 		current_player.name = str(player)
-		current_player.modulate = GameManager.players[player]["color"]
+		current_player.modulate = NetworkManager.players[player]["color"]
 		
 		# add player to node tree
 		get_node("players").add_child(current_player)
