@@ -17,7 +17,7 @@ Will create these folders:
 - Scenes/Levels.
 - Scenes/UI.
 - Scenes/Objects.
-- Characters.
+- Scenes/Characters.
 - Scripts.
 ## Setup
 

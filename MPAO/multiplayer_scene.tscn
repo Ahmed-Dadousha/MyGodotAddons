@@ -1,0 +1,98 @@
+[gd_scene load_steps=2 format=3 uid="uid://cg68q0wy1f1fx"]
+
+[ext_resource type="Script" path="res://multiplayer_scene.gd" id="1_mnspd"]
+
+[node name="multiplayerScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_mnspd")
+
+[node name="main" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -93.0
+offset_top = -50.5
+offset_right = 93.0
+offset_bottom = 50.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Name" type="LineEdit" parent="main"]
+layout_mode = 2
+placeholder_text = "Name"
+alignment = 1
+
+[node name="IP" type="LineEdit" parent="main"]
+layout_mode = 2
+placeholder_text = "IP"
+alignment = 1
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="main"]
+layout_mode = 2
+text = "color"
+
+[node name="Server" type="Button" parent="main"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Server"
+
+[node name="Client" type="Button" parent="main"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Client"
+
+[node name="lobby" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -63.0
+offset_top = -46.5
+offset_right = 63.0
+offset_bottom = 46.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="text" type="Label" parent="lobby"]
+layout_mode = 2
+text = "Waiting For Players..."
+
+[node name="playersCount" type="Label" parent="lobby"]
+layout_mode = 2
+text = "0
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Exit" type="Button" parent="lobby"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Exit"
+
+[node name="Start" type="Button" parent="lobby"]
+visible = false
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Start"
+
+[node name="Data" type="Button" parent="lobby"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Data"
+
+[connection signal="pressed" from="main/Server" to="." method="_on_server_pressed"]
+[connection signal="pressed" from="main/Client" to="." method="_on_client_pressed"]
+[connection signal="pressed" from="lobby/Exit" to="." method="_on_exit_pressed"]
+[connection signal="pressed" from="lobby/Start" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="lobby/Data" to="." method="_on_data_pressed"]
