@@ -1,16 +1,14 @@
 extends Control
 
+@export var playerScene: PackedScene
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	NetworkManager.connect("countChanged", change_count)
 	NetworkManager.multiplayerScene = "res://multiplayer_scene.tscn"
 	NetworkManager.gameScene = "res://game.tscn"
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
-	pass
-
+	NetworkManager.playerScene = playerScene
+	
 func _on_server_pressed():
 	
 	set_player_data()
@@ -27,17 +25,14 @@ func _on_client_pressed():
 		$lobby.show()
 	
 func _on_exit_pressed():
-	NetworkManager.disconnectFromTheServer()
-	
-	NetworkManager.playersLoaded = 0
-	NetworkManager.players.clear()
-	
+
+	clear()
 	$lobby.hide()
 	$main.show()
 	$lobby/Start.hide()
 
 func _on_start_pressed():
-	NetworkManager.startGame.rpc()
+	NetworkManager.Start()
 
 func change_count():
 	$lobby/playersCount.text = str(NetworkManager.playersLoaded)
@@ -49,3 +44,9 @@ func set_player_data():
 	NetworkManager.playerData["name"] = $main/Name.text
 	NetworkManager.playerData["color"] = $main/ColorPickerButton.color
 	NetworkManager.address = $main/IP.text
+
+func clear():
+	NetworkManager.disconnectFromTheServer()
+	NetworkManager.playersLoaded = 0
+	NetworkManager.players.clear()
+	

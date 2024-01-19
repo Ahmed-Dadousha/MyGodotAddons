@@ -39,6 +39,7 @@ var playerData: Dictionary = {"name" : "", "color": Color(0,0,0,0)}
 var server: ENetMultiplayerPeer 
 var multiplayerScene:String = ""
 var gameScene: String = ""
+var playerScene: PackedScene
 # Constants
 const MAX_CONNECTIONS = 20
 
@@ -50,6 +51,7 @@ signal connection_faild
 
 var connected: bool = false
 
+@onready var positions: Array[Node]
 
 # Node Functions
 
@@ -112,6 +114,25 @@ func startGame():
 func removePlayer(id: int):
 	get_node(str(id)).queue_free()
 
+@rpc("any_peer", "call_local")	
+func create_players(players):
+	
+	positions = get_tree().root.get_node("game/spawnPos").get_children()	
+	# Markers indexer
+	var i: int = 0
+	
+	for player in players:
+		# Instantiate new player scene
+		var current_player = playerScene.instantiate() as CharacterBody2D
+		# Set player properties
+		current_player.name = str(player)
+		current_player.modulate = players[player]["color"]
+		
+		# add player to node tree
+		get_tree().root.get_node("game/players").add_child(current_player)
+		current_player.global_position = positions[i].global_position
+		
+		i += 1
 
 # Buttons Pressed Functions
 func createServer() -> bool:
@@ -168,6 +189,9 @@ func createClient() -> bool:
 
 	return true
 
+func Start():
+	startGame.rpc()
+
 # My Custem Functions
 func printPlayersData():
 	print("\nThere Is [" + str(NetworkManager.playersLoaded) + "] Players\n")
@@ -204,4 +228,8 @@ func disconnectFromTheServer():
 
 func returnToMain():
 	get_tree().change_scene_to_file(multiplayerScene)
+
+func createPlayers():
+	if multiplayer.is_server():
+		create_players.rpc(players)
 #endregion

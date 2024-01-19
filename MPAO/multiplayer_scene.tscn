@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://cg68q0wy1f1fx"]
+[gd_scene load_steps=3 format=3 uid="uid://cg68q0wy1f1fx"]
 
 [ext_resource type="Script" path="res://multiplayer_scene.gd" id="1_mnspd"]
+[ext_resource type="PackedScene" uid="uid://qoqjwo2skkc" path="res://player.tscn" id="2_b38cw"]
 
 [node name="multiplayerScene" type="Control"]
 layout_mode = 3
@@ -10,6 +11,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_mnspd")
+playerScene = ExtResource("2_b38cw")
 
 [node name="main" type="VBoxContainer" parent="."]
 layout_mode = 1

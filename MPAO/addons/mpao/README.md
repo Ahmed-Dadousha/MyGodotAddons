@@ -20,10 +20,11 @@ Add the multiplayer functionality to your project
 ## Usage
 
 - Enable the plugin.
-- Add `Scripts/GameManager.gd` to autoload.
-- Set Multiplayer Scene &  Game Scene: <br>
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NetworkManager.multiplayerScene = "Your Multiplayer scene"
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NetworkManager.gameScene = "Your main Game scene"
+- Set Multiplayer Scene &  Game Scene & Player Scene: <br>
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NetworkManager.multiplayerScene = "Your Multiplayer scene"<br>
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NetworkManager.gameScene = "Your main Game scene" <br> NetworkManager.playerScene = #Your player scene
+
+
 - Assign Player Data, Ip In Server & Clients.
 - Create A Server: <br>
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if NetworkManger.createServer(): <br>
