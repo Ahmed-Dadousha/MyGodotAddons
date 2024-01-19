@@ -72,12 +72,8 @@ func _enter_tree():
 	
 	# Close the file
 	file.close()
-	
-	# Add GameManager To Autoload
-	add_autoload_singleton("GameManager","res://Scripts/GameManager.gd")
 
-func _exit_tree():
-	# Clean-up of the plugin goes here.
-	remove_autoload_singleton(AUTOLOAD_NAME)
-	remove_autoload_singleton("GameManager")
+#func _exit_tree():
+	## Clean-up of the plugin goes here.
+	#remove_autoload_singleton(AUTOLOAD_NAME)
 

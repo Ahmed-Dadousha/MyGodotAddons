@@ -18,8 +18,8 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-NetworkManager="*res://addons/mpao/mpao.gd"
 GameManager="*res://Scripts/GameManager.gd"
+NetworkManager="*res://addons/mpao/mpao.gd"
 
 [editor_plugins]
 

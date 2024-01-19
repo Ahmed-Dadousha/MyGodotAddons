@@ -20,6 +20,7 @@ Add the multiplayer functionality to your project
 ## Usage
 
 - Enable the plugin.
+- Add `Scripts/GameManager.gd` to autoload.
 - Set Multiplayer Scene &  Game Scene: <br>
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NetworkManager.multiplayerScene = "Your Multiplayer scene"
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NetworkManager.gameScene = "Your main Game scene"
