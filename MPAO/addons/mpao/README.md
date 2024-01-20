@@ -20,23 +20,32 @@ Add the multiplayer functionality to your project
 ## Usage
 
 - Enable the plugin.
-- Set Multiplayer Scene &  Game Scene & Player Scene: <br>
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NetworkManager.multiplayerScene = "Your Multiplayer scene"<br>
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NetworkManager.gameScene = "Your main Game scene" <br> NetworkManager.playerScene = #Your player scene
 
+- In the game or level scene create a node contains some markers 2d as spawn positions for  players and a node to contain the players.
 
-- Assign Player Data, Ip In Server & Clients.
+- Set Multiplayer Scene, Game Scene, Player Scene, Positions Node, Players Node: <br>
+	`NetworkManager.Set("Your Multiplayer Scene as string", "Your Game Scene as string", "Your Player Scene as Packed Scene", "Your Positions Node Path In Game Scene as String", "Your Players Node Path In Game Scene As String")`
+
+- Assign Player Data, IP Both In Server & Clients.
+
 - Create A Server: <br>
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if NetworkManger.createServer(): <br>
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Code here
+	`if NetworkManger.createServer():`<br>
+	#Code here
+
 - Create A Client: <br>
-	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if await NetworkManger.createClient():<br>
-	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Code here
--
+	`if await NetworkManger.createClient():`<br>
+	#Code here
+
 - To avoid control other players character Add next code to player script:<br>
 
 	#To avoid control other players character <br>
-	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;func _enter_tree():<br>
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set_multiplayer_authority(str(name).to_int())<br><br>
+	`func _enter_tree():`<br>
+	`set_multiplayer_authority(str(name).to_int())`<br><br>
 	#Add nextLine in process function in player script before any other code <br> 
-   	if not is_multiplayer_authority(): return
+   	`if not is_multiplayer_authority(): return`
+
+- To Create players in `_ready() `function call: <br>
+	`NetworkManager.createPlayers()`
+
+- To Start the game: <br>
+	`NetworkManager.Start()`

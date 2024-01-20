@@ -1,0 +1,37 @@
+[gd_scene load_steps=2 format=3 uid="uid://cl26ybco8qkac"]
+
+[ext_resource type="Script" path="res://addons/mpao/server_info.gd" id="1_hlu5v"]
+
+[node name="ServerInfo" type="HBoxContainer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 46.0
+grow_horizontal = 2
+script = ExtResource("1_hlu5v")
+
+[node name="Name" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Test"
+horizontal_alignment = 1
+
+[node name="IP" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "192.168.1.255"
+horizontal_alignment = 1
+
+[node name="PlayersCount" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "20"
+horizontal_alignment = 1
+
+[node name="Join" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+text = "Join
+"
+
+[connection signal="pressed" from="Join" to="." method="_on_join_pressed"]

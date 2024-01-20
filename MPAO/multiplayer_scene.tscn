@@ -1,7 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://cg68q0wy1f1fx"]
+[gd_scene load_steps=5 format=3 uid="uid://uihxcfmnm6c0"]
 
 [ext_resource type="Script" path="res://multiplayer_scene.gd" id="1_mnspd"]
 [ext_resource type="PackedScene" uid="uid://qoqjwo2skkc" path="res://player.tscn" id="2_b38cw"]
+[ext_resource type="PackedScene" uid="uid://cl26ybco8qkac" path="res://addons/mpao/server_info.tscn" id="3_x8m8t"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nmfv1"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [node name="multiplayerScene" type="Control"]
 layout_mode = 3
@@ -14,16 +18,17 @@ script = ExtResource("1_mnspd")
 playerScene = ExtResource("2_b38cw")
 
 [node name="main" type="VBoxContainer" parent="."]
+clip_contents = true
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -93.0
-offset_top = -50.5
-offset_right = 93.0
-offset_bottom = 50.5
+offset_left = -113.0
+offset_top = -85.5
+offset_right = 113.0
+offset_bottom = 85.5
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -50,6 +55,67 @@ text = "Server"
 layout_mode = 2
 mouse_default_cursor_shape = 2
 text = "Client"
+
+[node name="LanServerBrowser" type="Control" parent="."]
+visible = false
+layout_mode = 2
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 134.0
+
+[node name="Panel" type="Panel" parent="LanServerBrowser"]
+layout_mode = 2
+offset_right = 1152.0
+offset_bottom = 516.0
+
+[node name="Title" type="HBoxContainer" parent="LanServerBrowser/Panel"]
+layout_mode = 2
+offset_top = 3.0
+offset_right = 1152.0
+offset_bottom = 70.0
+
+[node name="Name" type="Label" parent="LanServerBrowser/Panel/Title"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Name"
+horizontal_alignment = 1
+
+[node name="IP" type="Label" parent="LanServerBrowser/Panel/Title"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "IP"
+horizontal_alignment = 1
+
+[node name="PlayersCount" type="Label" parent="LanServerBrowser/Panel/Title"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "PlayersCount"
+horizontal_alignment = 1
+
+[node name="Join" type="Label" parent="LanServerBrowser/Panel/Title"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Join
+"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="LanServerBrowser/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 71.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ServerInfos" type="VBoxContainer" parent="LanServerBrowser/Panel/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ServerInfo" parent="LanServerBrowser/Panel/ScrollContainer/ServerInfos" instance=ExtResource("3_x8m8t")]
+visible = false
+layout_mode = 2
 
 [node name="lobby" type="VBoxContainer" parent="."]
 visible = false
@@ -93,8 +159,43 @@ layout_mode = 2
 mouse_default_cursor_shape = 2
 text = "Data"
 
+[node name="toggle" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -94.5
+offset_top = 3.0
+offset_right = 94.5
+offset_bottom = 43.0
+grow_horizontal = 2
+
+[node name="Manual" type="Label" parent="toggle"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "Manually"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CheckButton" type="CheckButton" parent="toggle"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+mouse_default_cursor_shape = 2
+theme_override_styles/focus = SubResource("StyleBoxFlat_nmfv1")
+
+[node name="Browser" type="Label" parent="toggle"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "Browser"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [connection signal="pressed" from="main/Server" to="." method="_on_server_pressed"]
 [connection signal="pressed" from="main/Client" to="." method="_on_client_pressed"]
 [connection signal="pressed" from="lobby/Exit" to="." method="_on_exit_pressed"]
 [connection signal="pressed" from="lobby/Start" to="." method="_on_start_pressed"]
 [connection signal="pressed" from="lobby/Data" to="." method="_on_data_pressed"]
+[connection signal="pressed" from="toggle/CheckButton" to="." method="_on_check_button_pressed"]

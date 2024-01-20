@@ -7,13 +7,13 @@ script = ExtResource("1_lxda6")
 
 [node name="spawnPos" type="Node2D" parent="."]
 
-[node name="pos1" type="Marker2D" parent="spawnPos" groups=["pos"]]
+[node name="pos1" type="Marker2D" parent="spawnPos"]
 position = Vector2(57, 65)
 
-[node name="pos2" type="Marker2D" parent="spawnPos" groups=["pos"]]
+[node name="pos2" type="Marker2D" parent="spawnPos"]
 position = Vector2(1049, 83)
 
-[node name="pos3" type="Marker2D" parent="spawnPos" groups=["pos"]]
+[node name="pos3" type="Marker2D" parent="spawnPos"]
 position = Vector2(536, 458)
 
 [node name="players" type="Node2D" parent="."]
