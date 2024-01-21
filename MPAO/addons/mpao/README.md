@@ -36,7 +36,7 @@ Add the multiplayer functionality to your project
 	`if await NetworkManger.createClient():`<br>
 	#Code here
 
-- To avoid control other players character Add next code to player script:<br>
+- Add this code before any code in player script:<br>
 
 	#To avoid control other players character <br>
 	`func _enter_tree():`<br>

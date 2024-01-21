@@ -372,7 +372,6 @@ func add_server_info():
 	else:
 		for i in get_tree().root.get_node("multiplayerScene/LanServerBrowser/Panel/ScrollContainer/ServerInfos").get_children():
 			i.queue_free()
-#endregion
 
 func joinByIp(ip):
 	multiplayerFunc()
@@ -390,3 +389,6 @@ func joinByIp(ip):
 	get_tree().root.get_node("multiplayerScene/LanServerBrowser").hide()
 	get_tree().root.get_node("multiplayerScene/lobby").show()
 	
+
+#endregion
+
