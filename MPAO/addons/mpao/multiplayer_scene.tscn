@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://uihxcfmnm6c0"]
 
-[ext_resource type="Script" path="res://multiplayer_scene.gd" id="1_mnspd"]
+[ext_resource type="Script" path="res://addons/mpao/multiplayer_scene.gd" id="1_mnspd"]
 [ext_resource type="PackedScene" uid="uid://qoqjwo2skkc" path="res://player.tscn" id="2_b38cw"]
 [ext_resource type="PackedScene" uid="uid://cl26ybco8qkac" path="res://addons/mpao/server_info.tscn" id="3_x8m8t"]
 
@@ -26,30 +26,16 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -113.0
-offset_top = -85.5
+offset_top = -85.0
 offset_right = 113.0
-offset_bottom = 85.5
+offset_bottom = -19.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="Name" type="LineEdit" parent="main"]
-layout_mode = 2
-placeholder_text = "Name"
-alignment = 1
 
 [node name="IP" type="LineEdit" parent="main"]
 layout_mode = 2
 placeholder_text = "IP"
 alignment = 1
-
-[node name="ColorPickerButton" type="ColorPickerButton" parent="main"]
-layout_mode = 2
-text = "color"
-
-[node name="Server" type="Button" parent="main"]
-layout_mode = 2
-mouse_default_cursor_shape = 2
-text = "Server"
 
 [node name="Client" type="Button" parent="main"]
 layout_mode = 2
@@ -67,7 +53,8 @@ offset_top = 134.0
 [node name="Panel" type="Panel" parent="LanServerBrowser"]
 layout_mode = 2
 offset_right = 1152.0
-offset_bottom = 516.0
+offset_bottom = 514.0
+size_flags_vertical = 3
 
 [node name="Title" type="HBoxContainer" parent="LanServerBrowser/Panel"]
 layout_mode = 2
@@ -80,6 +67,13 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Name"
 horizontal_alignment = 1
+
+[node name="ID" type="Label" parent="LanServerBrowser/Panel/Title"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "ID"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="IP" type="Label" parent="LanServerBrowser/Panel/Title"]
 layout_mode = 2
@@ -106,6 +100,7 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_top = 71.0
+offset_right = -2.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -116,6 +111,41 @@ size_flags_horizontal = 3
 [node name="ServerInfo" parent="LanServerBrowser/Panel/ScrollContainer/ServerInfos" instance=ExtResource("3_x8m8t")]
 visible = false
 layout_mode = 2
+
+[node name="HBoxContainer" type="Control" parent="LanServerBrowser"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -345.0
+offset_top = -132.0
+offset_right = -2.0
+offset_bottom = -60.0
+grow_horizontal = 0
+
+[node name="Server" type="Button" parent="LanServerBrowser/HBoxContainer"]
+layout_mode = 2
+offset_right = 124.0
+offset_bottom = 31.0
+mouse_default_cursor_shape = 2
+text = "Server"
+
+[node name="Name" type="LineEdit" parent="LanServerBrowser/HBoxContainer"]
+layout_mode = 2
+offset_left = 135.0
+offset_top = 1.0
+offset_right = 341.0
+offset_bottom = 32.0
+size_flags_horizontal = 3
+
+[node name="Refresh" type="Button" parent="LanServerBrowser/HBoxContainer"]
+layout_mode = 2
+offset_left = 1.0
+offset_top = 39.0
+offset_right = 344.0
+offset_bottom = 70.0
+mouse_default_cursor_shape = 2
+text = "Refresh"
 
 [node name="lobby" type="VBoxContainer" parent="."]
 visible = false
@@ -193,9 +223,50 @@ text = "Browser"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[connection signal="pressed" from="main/Server" to="." method="_on_server_pressed"]
+[node name="Popup" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -82.5
+offset_top = -38.5
+offset_right = 82.5
+offset_bottom = 38.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Popup"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -80.0
+offset_right = 80.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "IP Not Exist"
+horizontal_alignment = 1
+
+[node name="OK" type="Button" parent="Popup"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 43.0
+offset_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_default_cursor_shape = 2
+text = "OK"
+
 [connection signal="pressed" from="main/Client" to="." method="_on_client_pressed"]
+[connection signal="pressed" from="LanServerBrowser/HBoxContainer/Server" to="." method="_on_server_pressed"]
+[connection signal="pressed" from="LanServerBrowser/HBoxContainer/Refresh" to="." method="_on_refresh_pressed"]
 [connection signal="pressed" from="lobby/Exit" to="." method="_on_exit_pressed"]
 [connection signal="pressed" from="lobby/Start" to="." method="_on_start_pressed"]
 [connection signal="pressed" from="lobby/Data" to="." method="_on_data_pressed"]
 [connection signal="pressed" from="toggle/CheckButton" to="." method="_on_check_button_pressed"]
+[connection signal="pressed" from="Popup/OK" to="." method="_on_ok_pressed"]

@@ -23,15 +23,15 @@ var avilableRooms: Array[Dictionary] = []
 func add(room: Dictionary):
 	# If room exist in avilable rooms update it's players count
 	for InRoom in avilableRooms:
-		if room["Name"] == InRoom["Name"]:
+		if room["roomID"] == InRoom["roomID"]:
 			InRoom["Count"] = room["Count"]
 			return
 	# Add the room if not exist
 	avilableRooms.append(room)
 	
-func remove(Name: String):
+func remove(ID: String):
 	for room in avilableRooms:
-		if room and room["Name"] == Name:	
+		if room and room["roomID"] == ID:	
 			avilableRooms.remove_at(avilableRooms.find(room))
 
 #endregion
@@ -41,9 +41,12 @@ func remove(Name: String):
 # Variables
 var address: String 
 var port: int = 8910
-var playerData: Dictionary = {"name" : "", "color": Color(0,0,0,0)}
+var exist: bool = false
+var roomID: String = ""
+var roomName: String = ""
+var playerData: Dictionary = {"name" : ""}
 var server: ENetMultiplayerPeer 
-var multiplayerScene:String = ""
+var multiplayerScene:String = "res://multiplayer_scene.tscn"
 var gameScene: String = ""
 var playerScene: PackedScene
 var playersNode: String = ""
@@ -135,7 +138,6 @@ func create_players(players):
 		var current_player = playerScene.instantiate() as CharacterBody2D
 		# Set player properties
 		current_player.name = str(player)
-		current_player.modulate = players[player]["color"]
 		
 		# add player to node tree
 		get_tree().root.get_node(playersNode).add_child(current_player)
@@ -151,7 +153,7 @@ func createServer() -> bool:
 		
 	var err = server.create_server(port, MAX_CONNECTIONS)
 
-
+	
 	# If there an error exist
 	if err != OK:
 		print("Can not host! " + str(err))
@@ -161,13 +163,14 @@ func createServer() -> bool:
 	print("Creating Server Successfully!! Waiting for Players........")
 		
 	checkName()
-	checkColor()
 	
 	playersLoaded += 1
 	
 	players[1] = playerData
 	
-	
+	# Set Room ID
+	roomID = str(randi_range(0,9)) +  str(randi_range(0,9)) +  str(randi_range(0,9)) +  str(randi_range(0,9))
+
 	# Broadcast room Data 
 	setUpBroadCast()
 	
@@ -180,7 +183,6 @@ func createClient() -> bool:
 
 	checkAddress()
 	checkName()
-	checkColor()
 	
 	# Start Listening
 	runListener()
@@ -189,19 +191,19 @@ func createClient() -> bool:
 		
 	for room in avilableRooms:
 		if room.IP == address:
-			break
+			exist = true
 	
-	# Create the client
-	server.create_client(address, port)
-	multiplayer.multiplayer_peer = server
-	print("Created Client Successfully!")
-
-	return true
-
-
-	print("This IP Not Exist")
-	disconnectFromTheServer()
-	return false
+	if exist:
+		# Create the client
+		server.create_client(address, port)
+		multiplayer.multiplayer_peer = server
+		print("Created Client Successfully!")
+		return true
+	else:
+		print("This IP Not Exist")
+		disconnectFromTheServer()
+		
+		return false
 	
 func Start():
 	startGame.rpc()
@@ -229,9 +231,6 @@ func checkAddress():
 func checkName():
 	playerData["name"] = "Unknown" if playerData["name"].strip_edges() == "" else playerData["name"]
 
-func checkColor():
-	playerData["color"] = Color(0,0,0,1) if playerData["color"] == Color(0,0,0,0)  else  playerData["color"]
-
 func disconnectFromTheServer():
 	multiplayer.multiplayer_peer = null
 	multiplayer.peer_connected.disconnect(playerConnected)
@@ -247,8 +246,7 @@ func createPlayers():
 	if multiplayer.is_server():
 		create_players.rpc(players)
 
-func Set(MultiplayerScene: String, GameScene: String, PlayerScene: PackedScene, PlayersNode: String, PositionsNode: String):
-	multiplayerScene = MultiplayerScene
+func Set(GameScene: String, PlayerScene: PackedScene, PlayersNode: String, PositionsNode: String):
 	gameScene = GameScene
 	playerScene = PlayerScene
 	playersNode = PlayersNode
@@ -260,14 +258,14 @@ signal server_found
 signal server_removed
 signal avilable_rooms_changed
 
-var RoomInfo: Dictionary = {"name": "name", "Count": 0}
+var RoomInfo: Dictionary = {"name": "name", "Count": 0, "roomID":""}
 var broadcaster : PacketPeerUDP
 var listener : PacketPeerUDP
 var listenPort: int = 8911
 var broadcastPort: int = 8912
 var run: bool = false
 var serverIP: String
-var roomName: String
+var RoomID: String
 var serverInfo: PackedScene = preload("res://addons/mpao/server_info.tscn")
 
 @onready var broadCastTimer: Timer = Timer.new()
@@ -288,9 +286,9 @@ func _ready():
 
 # Broad cast room data to all devices on LAN
 func setUpBroadCast():
-	RoomInfo.name = players[multiplayer.get_unique_id()].name
+	RoomInfo.name = roomName
 	RoomInfo.Count = playersLoaded
-	
+	RoomInfo.roomID = roomID
 	broadcaster = PacketPeerUDP.new()
 	broadcaster.set_broadcast_enabled(true)
 	broadcaster.set_dest_address(broadcastAddress, listenPort)
@@ -345,11 +343,11 @@ func _on_listener_timer_timeout():
 			var bytes = listener.get_packet()	
 			var data = bytes.get_string_from_ascii()
 			var roomInfo = JSON.parse_string(data)
-			roomName = roomInfo.name
+			RoomID = roomInfo.roomID
 			if serverIP != "":
-				add(Dictionary({"Name": roomInfo.name, "IP": serverIP, "Count": roomInfo.Count}))
+				add(Dictionary({"Name": roomInfo.name, "IP": serverIP, "Count": roomInfo.Count, "roomID": roomInfo.roomID}))
 		else:
-			remove(roomName)
+			remove(RoomID)
 			
 	add_server_info()
 
@@ -357,16 +355,16 @@ func add_server_info():
 	if avilableRooms:
 		for room in avilableRooms:
 			for i in get_tree().root.get_node("multiplayerScene/LanServerBrowser/Panel/ScrollContainer/ServerInfos").get_children():
-				if i.name == room.Name:
-					i.get_node("IP").text = serverIP
+				if i.name == room.roomID:
 					i.get_node("PlayersCount").text = str(room.Count)
 					return
 					
 			var currentInfo = serverInfo.instantiate()
-			currentInfo.name = room.Name
+			currentInfo.name = room.roomID
 			currentInfo.get_node("Name").text = room.Name
 			currentInfo.get_node("IP").text = serverIP
 			currentInfo.get_node("PlayersCount").text = str(room.Count)
+			currentInfo.get_node("ID").text = str(room.roomID)
 			currentInfo.connect("Join", joinByIp)
 			get_tree().root.get_node("multiplayerScene/LanServerBrowser/Panel/ScrollContainer/ServerInfos").add_child(currentInfo)
 	else:
@@ -379,7 +377,6 @@ func joinByIp(ip):
 	server = ENetMultiplayerPeer.new()
 
 	checkAddress()
-	checkName()
 	
 	# Create the client
 	server.create_client(ip, port)
@@ -388,6 +385,7 @@ func joinByIp(ip):
 	
 	get_tree().root.get_node("multiplayerScene/LanServerBrowser").hide()
 	get_tree().root.get_node("multiplayerScene/lobby").show()
+	get_tree().root.get_node("multiplayerScene/toggle").hide()
 	
 
 #endregion

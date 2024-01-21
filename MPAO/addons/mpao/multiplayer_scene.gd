@@ -5,16 +5,7 @@ extends Control
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	NetworkManager.connect("countChanged", change_count)
-	NetworkManager.Set("res://multiplayer_scene.tscn", "res://game.tscn", playerScene, "game/players", "game/spawnPos")
-
-func _on_server_pressed():
-	
-	set_player_data()
-	if NetworkManager.createServer():
-		$main.hide()
-		$lobby.show()
-		$lobby/Start.show()
-		$toggle.hide()
+	NetworkManager.Set("res://game.tscn", playerScene, "game/players", "game/spawnPos")
 
 func _on_client_pressed():
 
@@ -22,7 +13,10 @@ func _on_client_pressed():
 	if await NetworkManager.createClient():
 		$main.hide()
 		$lobby.show()
-	
+		$toggle.hide()
+	else:
+		$Popup.show()
+		
 func _on_exit_pressed():
 
 	clear()
@@ -43,8 +37,6 @@ func _on_data_pressed():
 	NetworkManager.printPlayersData()
 
 func set_player_data():
-	NetworkManager.playerData["name"] = $main/Name.text
-	NetworkManager.playerData["color"] = $main/ColorPickerButton.color
 	NetworkManager.address = $main/IP.text
 
 func clear():
@@ -56,5 +48,16 @@ func _on_check_button_pressed():
 	$main.visible = !$main.visible 
 	$LanServerBrowser.visible = !$LanServerBrowser.visible
 	
-	if $LanServerBrowser.visible:
-		NetworkManager.runListener()
+func _on_server_pressed():
+	NetworkManager.roomName = $LanServerBrowser/HBoxContainer/Name.text
+	if NetworkManager.createServer():
+		$LanServerBrowser.hide()
+		$toggle.hide()
+		$lobby.show()
+
+func _on_refresh_pressed():
+	NetworkManager.runListener()
+
+
+func _on_ok_pressed():
+	$Popup.hide()
