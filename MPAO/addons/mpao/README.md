@@ -23,8 +23,8 @@ Add the multiplayer functionality to your project
 
 - In the game or level scene create a node contains some markers 2d as spawn positions for  players and a node to contain the players.
 
-- Set Game Scene,Positions Node, Players Node: <br>
-	`NetworkManager.Set("Your Game Scene as string","Your Positions Node Path In Game Scene as String", "Your Players Node Path In Game Scene As String")`
+- Set Game Scene, GameSceneNode, Positions Node, Players Node: <br>
+	`NetworkManager.Set("Your Game Scene as string","Your game scene node","Your Positions Node Path In Game Scene as String", "Your Players Node Path In Game Scene As String")`
 
 - Add this code before any code in player script:<br>
 

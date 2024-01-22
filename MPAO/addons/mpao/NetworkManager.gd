@@ -44,6 +44,7 @@ var roomName: String = ""
 var playerData: Dictionary = {"name" : "", "character": ""}
 var server: ENetMultiplayerPeer 
 var gameScene: String = ""
+var gameSceneNode: String = ""
 var playersNode: String = ""
 var positionsNode: String = ""
 
@@ -265,12 +266,13 @@ func createPlayers():
 		create_players.rpc(players)
 
 func removePlayer(id: String):
-	get_tree().root.get_node(gameScene + "/players/" + id).queue_free()
+	get_tree().root.get_node(gameSceneNode + "/" + id).queue_free()
 	
-func Set(GameScene: String, PlayersNode: String, PositionsNode: String):
+func Set(GameScene: String, GameSceneNode: String,PlayersNode: String, PositionsNode: String):
 	gameScene = GameScene
 	playersNode = PlayersNode
 	positionsNode = PositionsNode
+	gameScene = GameSceneNode
 #endregion
 
 #region Lan Server Browser
