@@ -39,3 +39,4 @@ Add the multiplayer functionality to your project
 
 - Set player character: <br>
 	`NetworkManager.playerData["character"] = "Your character Scene as string`
+	
