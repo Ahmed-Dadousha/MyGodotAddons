@@ -1,7 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://uihxcfmnm6c0"]
+[gd_scene load_steps=4 format=3 uid="uid://uihxcfmnm6c0"]
 
 [ext_resource type="Script" path="res://addons/mpao/multiplayer_scene.gd" id="1_mnspd"]
-[ext_resource type="PackedScene" uid="uid://qoqjwo2skkc" path="res://player.tscn" id="2_b38cw"]
 [ext_resource type="PackedScene" uid="uid://cl26ybco8qkac" path="res://addons/mpao/server_info.tscn" id="3_x8m8t"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nmfv1"]
@@ -15,7 +14,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_mnspd")
-playerScene = ExtResource("2_b38cw")
 
 [node name="main" type="VBoxContainer" parent="."]
 clip_contents = true
@@ -35,6 +33,11 @@ grow_vertical = 2
 [node name="IP" type="LineEdit" parent="main"]
 layout_mode = 2
 placeholder_text = "IP"
+alignment = 1
+
+[node name="Name" type="LineEdit" parent="main"]
+layout_mode = 2
+placeholder_text = "Name"
 alignment = 1
 
 [node name="Client" type="Button" parent="main"]

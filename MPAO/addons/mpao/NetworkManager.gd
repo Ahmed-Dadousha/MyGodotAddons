@@ -34,9 +34,6 @@ func remove(ID: String):
 		if room and room["roomID"] == ID:	
 			avilableRooms.remove_at(avilableRooms.find(room))
 
-#endregion
-
-#region Network Manager
 
 # Variables
 var address: String 
@@ -44,11 +41,9 @@ var port: int = 8910
 var exist: bool = false
 var roomID: String = ""
 var roomName: String = ""
-var playerData: Dictionary = {"name" : ""}
+var playerData: Dictionary = {"name" : "", "character": ""}
 var server: ENetMultiplayerPeer 
-var multiplayerScene:String = "res://multiplayer_scene.tscn"
 var gameScene: String = ""
-var playerScene: PackedScene
 var playersNode: String = ""
 var positionsNode: String = ""
 
@@ -64,6 +59,30 @@ signal connection_faild
 var connected: bool = false
 
 @onready var positions: Array[Node]
+
+signal server_found
+signal server_removed
+signal avilable_rooms_changed
+
+var RoomInfo: Dictionary = {"name": "name", "Count": 0, "roomID":""}
+var broadcaster : PacketPeerUDP
+var listener : PacketPeerUDP
+var listenPort: int = 8911
+var broadcastPort: int = 8912
+var run: bool = false
+var serverIP: String
+var RoomID: String
+var serverInfo: PackedScene = preload("res://addons/mpao/server_info.tscn")
+
+@onready var broadCastTimer: Timer = Timer.new()
+@onready var LinstenerTimer: Timer = Timer.new()
+@export var broadcastAddress: String = "192.168.1.255"
+
+
+
+#endregion
+
+#region Network Manager
 
 # Node Functions
 
@@ -90,7 +109,7 @@ func playerDisconnected(id):
 	playersLoaded -= 1
 	print("Player " + str(id) + " Disconnected")
 	player_disconnected.emit(id)
-	
+	removePlayer(str(id))
 # Client Functions
 func serverConnected():
 	playersLoaded += 1
@@ -122,31 +141,29 @@ func register_player(newPlayerData):
 func startGame():
 	get_tree().change_scene_to_file(gameScene)
 
-@rpc("any_peer", "call_local")
-func removePlayer(id: int):
-	get_node(str(id)).queue_free()
-
 @rpc("any_peer", "call_local")	
 func create_players(players):
 	
 	positions = get_tree().root.get_node(positionsNode).get_children()	
 	# Markers indexer
 	var i: int = 0
-	
 	for player in players:
 		# Instantiate new player scene
-		var current_player = playerScene.instantiate() as CharacterBody2D
-		# Set player properties
+		var current_player = load(players[player]["character"]).instantiate() 
+		## Set player properties	
 		current_player.name = str(player)
-		
-		# add player to node tree
+		#
+		## add player to node tree
 		get_tree().root.get_node(playersNode).add_child(current_player)
-		current_player.NetworkManager_position = positions[i].NetworkManager_position
-		
+		current_player.global_position = positions[i].global_position
+		#
 		i += 1
 
 # Buttons Pressed Functions
 func createServer() -> bool:
+	if multiplayer.has_multiplayer_peer:
+		print("Arleady Created Server !")
+		
 	multiplayerFunc()
 	
 	server = ENetMultiplayerPeer.new()
@@ -157,6 +174,7 @@ func createServer() -> bool:
 	# If there an error exist
 	if err != OK:
 		print("Can not host! " + str(err))
+		disconnectFromTheServer()
 		return false
 		
 	multiplayer.multiplayer_peer = server
@@ -167,7 +185,7 @@ func createServer() -> bool:
 	playersLoaded += 1
 	
 	players[1] = playerData
-	
+
 	# Set Room ID
 	roomID = str(randi_range(0,9)) +  str(randi_range(0,9)) +  str(randi_range(0,9)) +  str(randi_range(0,9))
 
@@ -226,7 +244,7 @@ func multiplayerFunc():
 
 func checkAddress():
 	# To check if it is null
-	address = "192.168.1.2" if address.strip_edges() == "" or  address.strip_edges() == "127.0.0.1" else address
+	address = str(IP.get_local_addresses()[0])  if address.strip_edges() == "" or address.strip_edges() == "127.0.0.1" else address
 
 func checkName():
 	playerData["name"] = "Unknown" if playerData["name"].strip_edges() == "" else playerData["name"]
@@ -240,38 +258,22 @@ func disconnectFromTheServer():
 	multiplayer.connection_failed.disconnect(connectionFailed)
 
 func returnToMain():
-	get_tree().change_scene_to_file(multiplayerScene)
+	get_tree().change_scene_to_file("res://addons/mpao/multiplayer_scene.tscn")
 
 func createPlayers():
 	if multiplayer.is_server():
 		create_players.rpc(players)
 
-func Set(GameScene: String, PlayerScene: PackedScene, PlayersNode: String, PositionsNode: String):
+func removePlayer(id: String):
+	get_tree().root.get_node(gameScene + "/players/" + id).queue_free()
+	
+func Set(GameScene: String, PlayersNode: String, PositionsNode: String):
 	gameScene = GameScene
-	playerScene = PlayerScene
 	playersNode = PlayersNode
 	positionsNode = PositionsNode
 #endregion
 
 #region Lan Server Browser
-signal server_found
-signal server_removed
-signal avilable_rooms_changed
-
-var RoomInfo: Dictionary = {"name": "name", "Count": 0, "roomID":""}
-var broadcaster : PacketPeerUDP
-var listener : PacketPeerUDP
-var listenPort: int = 8911
-var broadcastPort: int = 8912
-var run: bool = false
-var serverIP: String
-var RoomID: String
-var serverInfo: PackedScene = preload("res://addons/mpao/server_info.tscn")
-
-@onready var broadCastTimer: Timer = Timer.new()
-@onready var LinstenerTimer: Timer = Timer.new()
-@export var broadcastAddress: String = "192.168.1.255"
-
 
 func _ready():
 	
@@ -286,7 +288,7 @@ func _ready():
 
 # Broad cast room data to all devices on LAN
 func setUpBroadCast():
-	RoomInfo.name = roomName
+	RoomInfo.name = roomName if roomName else "Unknown"
 	RoomInfo.Count = playersLoaded
 	RoomInfo.roomID = roomID
 	broadcaster = PacketPeerUDP.new()
@@ -305,7 +307,7 @@ func setUpBroadCast():
 func cleanUp():
 	if listener:
 		listener.close()
-	
+	LinstenerTimer.stop()
 	broadCastTimer.stop()
 	
 	if broadcaster != null:
@@ -313,13 +315,15 @@ func cleanUp():
 
 # Set up listener
 func setUp():
-	listener = PacketPeerUDP.new()
-	var err = listener.bind(listenPort)
-	if err == OK:
-		print("Bound to listen port " + str(listenPort) + " Successful")
+	if !listener:
+		listener = PacketPeerUDP.new()
+		var err = listener.bind(listenPort)
+		if err == OK:
+			print("Bound to listen port " + str(listenPort) + " Successful")
+		else:
+			print("Faild to bind to listen port!")	
 	else:
-		print("Faild to bind to listen port!")	
-
+		print("Already Lestening!")
 #
 func runListener():
 	setUp()
@@ -352,24 +356,25 @@ func _on_listener_timer_timeout():
 	add_server_info()
 
 func add_server_info():
-	if avilableRooms:
-		for room in avilableRooms:
+	if get_tree().root.has_node("multiplayerScene"):
+		if avilableRooms:
+			for room in avilableRooms:
+				for i in get_tree().root.get_node("multiplayerScene/LanServerBrowser/Panel/ScrollContainer/ServerInfos").get_children():
+					if i.name == room.roomID:
+						i.get_node("PlayersCount").text = str(room.Count)
+						return
+						
+				var currentInfo = serverInfo.instantiate()
+				currentInfo.name = room.roomID
+				currentInfo.get_node("Name").text = room.Name
+				currentInfo.get_node("IP").text = serverIP
+				currentInfo.get_node("PlayersCount").text = str(room.Count)
+				currentInfo.get_node("ID").text = str(room.roomID)
+				currentInfo.connect("Join", joinByIp)
+				get_tree().root.get_node("multiplayerScene/LanServerBrowser/Panel/ScrollContainer/ServerInfos").add_child(currentInfo)
+		else:
 			for i in get_tree().root.get_node("multiplayerScene/LanServerBrowser/Panel/ScrollContainer/ServerInfos").get_children():
-				if i.name == room.roomID:
-					i.get_node("PlayersCount").text = str(room.Count)
-					return
-					
-			var currentInfo = serverInfo.instantiate()
-			currentInfo.name = room.roomID
-			currentInfo.get_node("Name").text = room.Name
-			currentInfo.get_node("IP").text = serverIP
-			currentInfo.get_node("PlayersCount").text = str(room.Count)
-			currentInfo.get_node("ID").text = str(room.roomID)
-			currentInfo.connect("Join", joinByIp)
-			get_tree().root.get_node("multiplayerScene/LanServerBrowser/Panel/ScrollContainer/ServerInfos").add_child(currentInfo)
-	else:
-		for i in get_tree().root.get_node("multiplayerScene/LanServerBrowser/Panel/ScrollContainer/ServerInfos").get_children():
-			i.queue_free()
+				i.queue_free()
 
 func joinByIp(ip):
 	multiplayerFunc()
@@ -377,11 +382,20 @@ func joinByIp(ip):
 	server = ENetMultiplayerPeer.new()
 
 	checkAddress()
-	
+
 	# Create the client
-	server.create_client(ip, port)
+	var err = server.create_client(ip, port)
 	multiplayer.multiplayer_peer = server
 	print("Created Client Successfully!")
+
+	# If there an error exist
+	if err != OK:
+		print("Can not host! " + str(err))
+		disconnectFromTheServer()
+		return false
+	
+	playerData["name"] = get_tree().root.get_node("multiplayerScene/LanServerBrowser/HBoxContainer/Name").text
+	playerData["character"] = "res://player.tscn"
 	
 	get_tree().root.get_node("multiplayerScene/LanServerBrowser").hide()
 	get_tree().root.get_node("multiplayerScene/lobby").show()

@@ -23,18 +23,8 @@ Add the multiplayer functionality to your project
 
 - In the game or level scene create a node contains some markers 2d as spawn positions for  players and a node to contain the players.
 
-- Set Multiplayer Scene, Game Scene, Player Scene, Positions Node, Players Node: <br>
-	`NetworkManager.Set("Your Multiplayer Scene as string", "Your Game Scene as string", "Your Player Scene as Packed Scene", "Your Positions Node Path In Game Scene as String", "Your Players Node Path In Game Scene As String")`
-
-- Assign Player Data, IP Both In Server & Clients.
-
-- Create A Server: <br>
-	`if NetworkManger.createServer():`<br>
-	#Code here
-
-- Create A Client: <br>
-	`if await NetworkManger.createClient():`<br>
-	#Code here
+- Set Game Scene,Positions Node, Players Node: <br>
+	`NetworkManager.Set("Your Game Scene as string","Your Positions Node Path In Game Scene as String", "Your Players Node Path In Game Scene As String")`
 
 - Add this code before any code in player script:<br>
 
@@ -47,5 +37,5 @@ Add the multiplayer functionality to your project
 - To Create players in `_ready() `function call: <br>
 	`NetworkManager.createPlayers()`
 
-- To Start the game: <br>
-	`NetworkManager.Start()`
+- Set player character: <br>
+	`NetworkManager.playerData["character"] = "Your character Scene as string`
