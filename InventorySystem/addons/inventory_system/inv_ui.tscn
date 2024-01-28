@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://dganyyan804fi" path="res://addons/inventory_system/inv_ui_slot.tscn" id="3_noipy"]
 
 [node name="Inv_UI" type="Control"]
+visible = false
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5

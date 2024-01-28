@@ -60,17 +60,6 @@ func removeItem(oldItemName: String):
 	
 	print("Item Not Exist in the Inventory!")
 
-#func invPath(path: String):
-	##slots = get_tree().root.get_node(path).get_children()
-	##print(get_tree().root.get_node("game/Inventory").get_child(0))
-	#pass
-	#
-#func _on_visibility_changed():
-	#if visible:
-		##$BG.texture = InventoryBG if InventoryBG else preload("res://addons/inventory_system/inventory-slot.png")
-		#for slot in slots:
-			#slot.get_node("BG").texture = InventorySlotBG if InventorySlotBG else preload("res://addons/inventory_system/inventory-slot.png")
-
 func getCount(itemName: String):
 	for item in Inv:
 		if item.name == itemName:
