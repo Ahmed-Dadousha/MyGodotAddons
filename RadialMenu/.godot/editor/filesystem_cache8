@@ -1,0 +1,12 @@
+ea4bc82a6ad023ab7ee23ee620429895
+::res://::1706390862
+icon.svg::CompressedTexture2D::3992175479360953180::1705484450::1705484461::1::::<><>::
+selection_wheel.tscn::PackedScene::7495446834457900263::1705961859::0::1::::<><>::res://addons/radialmenu/RadialMenu.gd
+::res://addons/::1705952644
+::res://addons/radialmenu/::1705961807
+Icon.png::CompressedTexture2D::4446044935491348127::1705952489::1705952646::1::::<><>::
+plugin.cfg::TextFile::-1::1705958170::0::1::::<><>::
+radialmenu.gd::GDScript::-1::1705956970::0::1::::<>EditorPlugin<>::
+RadialMenu.gd::GDScript::-1::1705961482::0::1::::<>Control<>::
+README.md::TextFile::-1::1705961834::0::1::::<><>::
+tool.gd::GDScript::-1::1705954443::0::1::::tool<>AtlasTexture<>::

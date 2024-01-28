@@ -1,0 +1,57 @@
+[gd_scene load_steps=5 format=3 uid="uid://cmalu16opsxll"]
+
+[ext_resource type="Script" path="res://addons/transitionlayer/transition_layer.gd" id="1_rii5p"]
+
+[sub_resource type="Animation" id="Animation_jm3ir"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ColorRect:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0, 0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_wriun"]
+resource_name = "fade"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ColorRect:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 0), Color(0, 0, 0, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_wpku6"]
+_data = {
+"RESET": SubResource("Animation_jm3ir"),
+"fade": SubResource("Animation_wriun")
+}
+
+[node name="TransitionLayer" type="CanvasLayer"]
+visible = false
+script = ExtResource("1_rii5p")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+modulate = Color(0, 0, 0, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_wpku6")
+}

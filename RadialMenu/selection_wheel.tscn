@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3 uid="uid://de136c5jjp3cl"]
+
+[ext_resource type="Script" path="res://addons/radialmenu/RadialMenu.gd" id="1_wdumx"]
+
+[node name="SelectionWheel" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_wdumx")
+bg_color = Color(0.239216, 0.239216, 0.239216, 1)
+line_color = Color(0.678431, 0.678431, 0.678431, 1)
+highlight_color = Color(0.0823529, 0.803922, 0.878431, 0.45098)
+line_width = 1
